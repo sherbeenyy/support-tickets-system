@@ -4,7 +4,15 @@
 
 @section('content')
 <h2>Create Ticket</h2>
-
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <form action="{{ route('tickets.store') }}" method="POST">
     @csrf
     <div class="mb-3">
@@ -32,4 +40,6 @@
     <button type="submit" class="btn btn-success">Create Ticket</button>
     <a href="{{ route('engineer.dashboard') }}" class="btn btn-secondary">Cancel</a>
 </form>
+
+
 @endsection

@@ -16,10 +16,12 @@
                     <p class="card-text">{{ $ticket->description }}</p>
                     <p class="mb-1"><strong>Priority:</strong> {{ ucfirst($ticket->priority->value) }}</p>
                     <p><strong>Status:</strong> {{ ucfirst($ticket->status->value) }}</p>
+                    <p><strong>created at:</strong> {{ $ticket->created_at }}</p>
+
 
                     <div class="d-flex justify-content-between mt-3">
-                        <a href="{{ route('engineer.tickets.edit', $ticket->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <form action="{{ route('engineer.tickets.destroy', $ticket->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                        <a href="{{ route('tickets.edit', $ticket->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ route('tickets.destroy', $ticket->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-sm btn-danger">Delete</button>

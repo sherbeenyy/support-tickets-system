@@ -3,21 +3,25 @@
 namespace App\Http\Controllers\Engineer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\TicketRequest;
 use App\Models\Ticket;
-use App\Http\Requests\TicketRequest; // We'll create this request for validation
+use App\Repositories\TicketRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\TicketStatusEnum;
 
 class TicketController extends Controller
 {
-    // View all tickets of current engineer (status != closed)
+    protected $tickets;
+
+    public function __construct(TicketRepository $tickets)
+    {
+        $this->tickets = $tickets;
+    }
+
+    // View all tickets of current engineer
     public function index()
     {
-        $tickets = Ticket::where('user_id', Auth::id())
-                         ->where('status', '!=', 'closed')
-                         ->orderBy('created_at', 'desc')
-                         ->get();
-
+        $tickets = $this->tickets->getEngineerTickets();
         return view('engineer.dashboard', compact('tickets'));
     }
 
@@ -32,9 +36,8 @@ class TicketController extends Controller
     {
         $data = $request->validated();
         $data['user_id'] = Auth::id();
-         $data['status'] = 'opened'; 
-
-        Ticket::create($data);
+        $data['status'] = "open";
+        $this->tickets->createTicket($data);
 
         return redirect()->route('engineer.dashboard')->with('success', 'Ticket created successfully');
     }
@@ -42,7 +45,6 @@ class TicketController extends Controller
     // Show edit form
     public function edit(Ticket $ticket)
     {
-        // ensure ticket belongs to current engineer
         if ($ticket->user_id !== Auth::id()) {
             return redirect()->route('engineer.dashboard')->with('error', 'Unauthorized access');
         }
@@ -57,7 +59,7 @@ class TicketController extends Controller
             return redirect()->route('engineer.dashboard')->with('error', 'Unauthorized access');
         }
 
-        $ticket->update($request->validated());
+        $this->tickets->updateTicket($ticket, $request->validated());
 
         return redirect()->route('engineer.dashboard')->with('success', 'Ticket updated successfully');
     }
@@ -69,7 +71,7 @@ class TicketController extends Controller
             return redirect()->route('engineer.dashboard')->with('error', 'Unauthorized access');
         }
 
-        $ticket->delete();
+        $this->tickets->deleteTicket($ticket);
 
         return redirect()->route('engineer.dashboard')->with('success', 'Ticket deleted successfully');
     }

@@ -16,7 +16,7 @@ class TicketRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'status' => 'required|in:open,in_progress,closed',
+            'status' => 'sometimes|in:open,in_progress,closed',
             'priority' => 'required|in:low,medium,high',
         ];
     }

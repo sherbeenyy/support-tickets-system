@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Engineer\TicketController;
+use App\Http\Controllers\CommentController;
+
 
 
 // Homepage (login page)
@@ -31,8 +33,12 @@ Route::prefix('admin')->middleware(['auth:web', 'role:admin,super_admin'])->grou
 
 });
 
-Route::middleware(['auth:web', 'role:tech_lead'])->group(function () {
-    Route::get('/techlead/dashboard', fn() => view('techlead.dashboard'))->name('techlead.dashboard');
+Route::middleware(['auth:web', 'role:tech_lead,engineer'])->group(function () {
+    Route::post('/tickets/{ticket}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::get('/tickets/{ticket}/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 
@@ -45,6 +51,7 @@ Route::middleware(['auth:web', 'role:engineer'])->prefix('engineer')->group(func
     Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 });
+
 
 
 

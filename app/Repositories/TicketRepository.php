@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TicketRepository
 {
-    // Get all tickets for current user (engineer)
+    // Get all tickets for current user 
     public function getEngineerTickets()
     {
         return Ticket::where('user_id', Auth::id())

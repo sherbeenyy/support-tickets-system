@@ -12,7 +12,7 @@
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
                     <form action="{{ route('login.submit') }}" method="POST">
-                        @csrf  <!-- mandatory for Laravel forms -->
+                        @csrf 
                         <div class="mb-3">
                             <label for="email">Email</label>
                             <input type="email" name="email" class="form-control" value="{{ old('email') }}">
@@ -31,10 +31,6 @@
 
                         <button type="submit" class="btn btn-primary w-100">Login</button>
                     </form>
-
-@if(session('error'))
-<div class="alert alert-danger mt-2">{{ session('error') }}</div>
-@endif
 
             </div>
         </div>

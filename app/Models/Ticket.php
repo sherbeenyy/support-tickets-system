@@ -22,7 +22,6 @@ class Ticket extends Model
     'status' => TicketStatusEnum::Open,
 ];
 
-    // Relation to engineer (user)
     public function user()
     {
         return $this->belongsTo(User::class);

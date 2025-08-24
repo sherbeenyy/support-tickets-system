@@ -15,19 +15,6 @@
                 <span class="text-muted small">({{ $comment->created_at->timezone('Africa/Cairo')->format('M d, Y h:i A') }})</span>
                 <p class="mb-1">{{ $comment->content }}</p>
             </div>
-            
-            @if($comment->user_id === auth()->id())
-                <div class="d-flex">
-                    <a href="{{ route('comments.edit', $comment->id) }}" 
-                       class="btn btn-sm btn-outline-primary me-2">Edit</a>
-                    <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" 
-                          onsubmit="return confirm('Delete this comment?');">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm btn-outline-danger">Delete</button>
-                    </form>
-                </div>
-            @endif
         </div>
     @empty
         <p class="text-muted">No comments yet. Be the first to comment!</p>

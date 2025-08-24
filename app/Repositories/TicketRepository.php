@@ -1,36 +1,34 @@
 <?php
-
+// app/Repositories/TicketRepository.php
 namespace App\Repositories;
 
 use App\Models\Ticket;
-use Illuminate\Support\Facades\Auth;
 
 class TicketRepository
 {
-    // Get all tickets for current user 
-    public function getEngineerTickets()
-    {
-        return Ticket::where('user_id', Auth::id())
-                     ->where('status', '!=', 'closed')
-                     ->orderBy('created_at', 'desc')
-                     ->get();
-    }
-
-    // Create a new ticket
-    public function createTicket(array $data)
+    public function create(array $data): Ticket
     {
         return Ticket::create($data);
     }
 
-    // Update a ticket
-    public function updateTicket(Ticket $ticket, array $data)
+    public function update(Ticket $ticket, array $data): Ticket
     {
-        return $ticket->update($data);
+        $ticket->update($data);
+        return $ticket;
     }
 
-    // Delete a ticket
-    public function deleteTicket(Ticket $ticket)
+    public function delete(Ticket $ticket): void
     {
-        return $ticket->delete();
+        $ticket->delete();
+    }
+
+    public function findById(int $id): ?Ticket
+    {
+        return Ticket::find($id);
+    }
+
+    public function findByUser(int $userId)
+    {
+        return Ticket::where('user_id', $userId)->get();
     }
 }

@@ -18,6 +18,7 @@ class TicketRequest extends FormRequest
             'description' => 'required|string',
             'status' => 'sometimes|in:open,in_progress,closed',
             'priority' => 'required|in:low,medium,high',
+            
         ];
     }
 }

@@ -10,6 +10,9 @@ use App\DTOs\Ticket\UpdateTicketDTO;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\TicketResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
 
 
 class ApiTicketController extends Controller
@@ -21,13 +24,12 @@ class ApiTicketController extends Controller
         $this->ticketService = $tickets;
     }
 
-    public function index(): JsonResponse
-    {
-        $tickets = $this->ticketService->getEngineerTickets(Auth::id());
-        return response()->json($tickets);
-    }
+public function index(): AnonymousResourceCollection
+{
+    $tickets = $this->ticketService->getEngineerTickets(Auth::id());
+    return TicketResource::collection($tickets);
+}
 
-// ApiTicketController.php
 public function store(TicketRequest $request): JsonResponse
 {
     $dto = CreateTicketDTO::fromRequest($request, auth('api')->id());
@@ -35,8 +37,19 @@ public function store(TicketRequest $request): JsonResponse
 
     return response()->json([
         'message' => 'Ticket created successfully',
-        'ticket' => $ticket
+        'ticket' => new TicketResource($ticket)
     ], 201);
+}
+
+public function show($id): JsonResponse
+{
+    $ticket = Ticket::find($id);
+
+    if (!$ticket) {
+        return response()->json(['message' => 'Ticket not found'], 404);
+    }
+
+    return response()->json(new TicketResource($ticket));
 }
 
 public function update(TicketRequest $request, $id): JsonResponse
@@ -57,33 +70,16 @@ public function update(TicketRequest $request, $id): JsonResponse
 
     return response()->json([
         'message' => 'Ticket updated successfully',
-        'ticket' => $updated
+        'ticket' => new TicketResource($updated)
     ]);
 }
-
-    public function show($id)
-    {
-        $ticket = Ticket::find($id);
-
-        if (!$ticket) {
-            return response()->json([
-                'message' => 'Ticket not found'
-            ], 404);
-        }
-
-        return response()->json($ticket);
-    }
-
-
 
 public function destroy($id): JsonResponse
 {
     $ticket = Ticket::find($id);
 
     if (!$ticket) {
-        return response()->json([
-            'message' => 'Ticket not found'
-        ], 404);
+        return response()->json(['message' => 'Ticket not found'], 404);
     }
 
     try {

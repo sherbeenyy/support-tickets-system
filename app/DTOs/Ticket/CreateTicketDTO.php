@@ -2,16 +2,17 @@
 // app/DTOs/Ticket/CreateTicketDTO.php
 namespace App\DTOs\Ticket;
 
+use Faker\Provider\Base;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
-class CreateTicketDTO
+class CreateTicketDTO extends Base
 {
     public function __construct(
         public readonly int $user_id,
-        public readonly string $title,
         public readonly string $description,
         public readonly string $priority,
+        public readonly ?string $title = null,
     ) {}
 
     public static function fromRequest(Request $request, int $userId): self

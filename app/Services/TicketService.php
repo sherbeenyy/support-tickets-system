@@ -22,24 +22,18 @@ class TicketService
 
     public function createTicket(CreateTicketDTO $dto): Ticket
     {
+        // $dto->validate();
         return $this->tickets->create($dto->toArray());
     }
 
     public function updateTicket(Ticket $ticket, UpdateTicketDTO $dto): Ticket
     {
-        if ($ticket->user_id !== Auth::id()) {
-            throw new Exception("Unauthorized to update this ticket");
-        }
 
         return $this->tickets->update($ticket, $dto->toArray());
     }
 
     public function deleteTicket(Ticket $ticket): void
     {
-        if ($ticket->user_id !== Auth::id()) {
-            throw new Exception("Unauthorized to delete this ticket");
-        }
-
         $this->tickets->delete($ticket);
     }
 }
